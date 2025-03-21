@@ -1,0 +1,58 @@
+name: Build Kernel Driver and User-mode Client
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-driver:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: x86_64-pc-windows-msvc
+
+    - name: Build kernel driver
+      run: |
+        cd driver
+        cargo make default --release
+
+    - name: Upload driver EXE
+      uses: actions/upload-artifact@v2
+      with:
+        name: kernel-driver
+        path: driver/target/release/1.exe
+
+  build-client:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: x86_64-pc-windows-msvc
+
+    - name: Build user-mode client
+      run: |
+        cd client
+        cargo build --release
+
+    - name: Upload client EXE
+      uses: actions/upload-artifact@v2
+      with:
+        name: user-mode-client
+        path: client/target/release/2.exe
