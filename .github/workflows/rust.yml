@@ -22,16 +22,19 @@ jobs:
         toolchain: stable
         target: x86_64-pc-windows-msvc
 
+    - name: Install cargo-make
+      run: cargo install cargo-make
+
     - name: Build kernel driver
       run: |
         cd driver
         cargo make default --release
 
-    - name: Upload driver EXE
-      uses: actions/upload-artifact@v2
+    - name: Upload driver SYS
+      uses: actions/upload-artifact@v3
       with:
         name: kernel-driver
-        path: driver/target/release/1.exe
+        path: driver/target/release/2.exe
 
   build-client:
     runs-on: windows-latest
@@ -52,7 +55,7 @@ jobs:
         cargo build --release
 
     - name: Upload client EXE
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: user-mode-client
-        path: client/target/release/2.exe
+        path: client/target/release/3.exe
